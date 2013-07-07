@@ -4,7 +4,7 @@ ARMGNU ?= arm-elf
 AOPS = --warn --fatal-warnings 
 COPS = -std=c99 -Wall -Werror -O3 -nostdlib -nostartfiles -ffreestanding 
 
-OBJECTS = vectors.o pimon.o uart.o gpio.o timer.o
+OBJECTS = vectors.o pimon.o uart.o gpio.o timer.o string.o
 
 all : pimon.bin
 
