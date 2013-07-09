@@ -118,7 +118,7 @@ int main (void) {
 			}
 			break;
 		default:
-			if(length < MAX_LENGTH) {
+			if(length < MAX_LENGTH && c >= 0x20) { // ignore non-printing chars
 				buf[length] = c;
 				length++;
 				putc(c); // echo
