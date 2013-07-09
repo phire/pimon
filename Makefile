@@ -2,9 +2,9 @@
 ARMGNU ?= arm-elf
 
 AOPS = --warn --fatal-warnings 
-COPS = -std=c99 -Wall -Werror -O3 -nostdlib -nostartfiles -ffreestanding 
+COPS = -std=c99 -Wall -Werror -O2 -nostdlib -nostartfiles -ffreestanding -fno-zero-initialized-in-bss -flto
 
-OBJECTS = vectors.o pimon.o uart.o gpio.o timer.o string.o
+OBJECTS = vectors.o pimon.o uart.o gpio.o timer.o string.o printf.o
 
 all : pimon.bin
 
@@ -24,7 +24,7 @@ vectors.o : vectors.s
 	$(ARMGNU)-gcc $(COPS) -c $< -o $@
 
 pimon.elf : memmap $(OBJECTS)
-	$(ARMGNU)-ld $(OBJECTS) -T memmap -o pimon.elf
+	$(ARMGNU)-gcc $(OBJECTS) -T memmap -o pimon.elf $(COPS) -lgcc
 	$(ARMGNU)-objdump -D pimon.elf > pimon.list
 
 pimon.bin : pimon.elf

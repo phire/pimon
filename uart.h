@@ -7,7 +7,7 @@ void initUART();
 void putc(char c);
 
 // send a null terminated string
-void puts(char *s);
+//void puts(char *s);
 
 // Send a hex string
 void puthex(unsigned int x);

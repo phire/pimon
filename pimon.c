@@ -8,39 +8,38 @@ int (*commands_func[20])(int, char**);
 int num_commands = 0;
 
 int help(int argc, char **argv) {
-	puts("Supported commands: ");
+	printf("Supported commands: ");
 	for(int i = 0; i < num_commands; i++) {
-		puts(commands[i]); 
+		printf(commands[i]); 
 		if(i != num_commands - 1)
-			puts(", ");
+			printf(", ");
 		else
-			puts("\r\n");
+			printf("\r\n");
 	}
 	return 0;
 }
 
-int test(int argc, char **argv) {
-	puts("There are "); putc('0' + argc); puts(" arguments\r\n");
+int test(int argc, char **argv) { // FIXME: use %d instead of %x
+	printf("There are %x arguments\r\n", argc);
 	for(int i = 0; i <= argc; i++) {
-		putc('0' + i); puts(": '"); puts(argv[i]); puts("'\r\n");
+		printf("%x: '%s'\r\n", i, argv[i]);
 	}
 	return argc;
 }
 
 int peek(int argc, char **argv) {
 	if(argc != 1) {
-		puts("peek: invalid args\r\n");
+		printf("peek: invalid args\r\n");
 		return -1;
 	}
 	unsigned int *address = (unsigned int*) strtol(argv[1], 0, 16);
-	puthex(*address);
-	puts("\r\n");
+	printf("%08x\r\n", *address);
 	return 0;
 }
 
 int poke(int argc, char **argv) {
 	if(argc != 2) {
-		puts("poke: invalid args\r\n");
+		printf("poke: invalid args\r\n");
 		return -1;
 	}
 	unsigned int *address = (unsigned int*) strtol(argv[1], 0, 16);
@@ -71,7 +70,7 @@ int parsePrompt(char *p) {
 		if(strcmp(argv[0], commands[i]) == 0)
 			return commands_func[i](argc, argv);
 	}
-	puts("pimon: "); puts(argv[0]);	puts(": command not found\r\n");
+	printf("pimon: %s: command not found\r\n", argv[0]);
 	return -1;
 }
 
@@ -81,7 +80,6 @@ int main (void) {
 	initTimer();
 	initUART();
 
-	num_commands = 0; // BSS isn't being zeroed yet
 	addCommand("help", &help);
 	addCommand("test", &test);
 	addCommand("peek", &peek);
@@ -90,8 +88,8 @@ int main (void) {
 	// Setup 'ok led' as output
 	gpio_function(16, GPIO_OUTPUT);
 
-	puts("Pimon 0.1 - Debug monitor for Raspberry Pi (ARM)\r\n");
-	puts("\r\n(pimon) ");
+	printf("Pimon 0.1 - Debug monitor for Raspberry Pi (ARM)\r\n");
+	printf("\r\n(pimon) ");
 	gpio_clr(16); // turn 'ok led' on
 
 	int length = 0;
@@ -102,19 +100,19 @@ int main (void) {
 		switch(c) {
 		case '\r': // Return
 			gpio_set(16); // led off
-			puts("\r\n");
+			printf("\r\n");
 			if(length > 0) {
 				buf[length] = '\0';
 				parsePrompt(buf);
 			}
-			puts("(pimon) ");
+			printf("(pimon) ");
 			length = 0;
 			gpio_clr(16); // led on
 			break;
 		case '\b': // Backspace
 			if (length > 0) {
 				length--;
-				puts("\b \b");
+				printf("\b \b");
 			}
 			break;
 		default:
