@@ -48,6 +48,12 @@ void puts(char *s) {
 	}
 }
 
+void puthex(unsigned int x) {
+	static const char *hex = "0123456789abcdef";
+	for(int i=0; i<8; i++, x >>= 4)
+		putc(hex[x&0xf]);
+}
+
 char getc() {
 	while((*AUX_MU_LSR_REG & 0x1) == 0);
 	return *AUX_MU_IO_REG;
