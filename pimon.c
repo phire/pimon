@@ -21,10 +21,32 @@ int help(int argc, char **argv) {
 
 int test(int argc, char **argv) {
 	puts("There are "); putc('0' + argc); puts(" arguments\r\n");
-	for(int i = 0; i < argc; i++) {
+	for(int i = 0; i <= argc; i++) {
 		putc('0' + i); puts(": '"); puts(argv[i]); puts("'\r\n");
 	}
 	return argc;
+}
+
+int peek(int argc, char **argv) {
+	if(argc != 1) {
+		puts("peek: invalid args\r\n");
+		return -1;
+	}
+	unsigned int *address = (unsigned int*) strtol(argv[1], 0, 16);
+	puthex(*address);
+	puts("\r\n");
+	return 0;
+}
+
+int poke(int argc, char **argv) {
+	if(argc != 2) {
+		puts("poke: invalid args\r\n");
+		return -1;
+	}
+	unsigned int *address = (unsigned int*) strtol(argv[1], 0, 16);
+	unsigned int value = strtol(argv[2], 0, 16);
+	*address = value;
+	return 0;
 }
 
 void addCommand(char *cmd, int (*func)(int argc, char** argv)) {
@@ -47,7 +69,7 @@ int parsePrompt(char *p) {
 	}
 	for(int i=0; i < num_commands; i++) {
 		if(strcmp(argv[0], commands[i]) == 0)
-			return commands_func[i](argc + 1, argv);
+			return commands_func[i](argc, argv);
 	}
 	puts("pimon: "); puts(argv[0]);	puts(": command not found\r\n");
 	return -1;
@@ -62,6 +84,8 @@ int main (void) {
 	num_commands = 0; // BSS isn't being zeroed yet
 	addCommand("help", &help);
 	addCommand("test", &test);
+	addCommand("peek", &peek);
+	addCommand("poke", &poke);
 
 	// Setup 'ok led' as output
 	gpio_function(16, GPIO_OUTPUT);
