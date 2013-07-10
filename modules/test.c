@@ -1,7 +1,6 @@
 #include <module.h>
 #include <string.h>
-
-void addCommand(char *cmd, int (*func)(int argc, char** argv));
+#include <commands.h>
 
 int test(int argc, char **argv) {
 	printf("There are %d arguments\r\n", argc);

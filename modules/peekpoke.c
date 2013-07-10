@@ -1,7 +1,6 @@
 #include <module.h>
 #include <string.h>
-
-void addCommand(char *cmd, int (*func)(int argc, char** argv));
+#include <commands.h>
 
 int peek(int argc, char **argv) {
 	if(argc != 1) {
