@@ -1,35 +1,38 @@
+PREFIX := arm-elf
+CC := $(PREFIX)-gcc
+AS := $(PREFIX)-as
+OBJCOPY := $(PREFIX)-objcopy
 
-ARMGNU ?= arm-elf
+TARGET := pimon
+DIRS := core lib modules
 
-AOPS = --warn --fatal-warnings 
-COPS = -std=c99 -Wall -Werror -O2 -nostdlib -nostartfiles -ffreestanding -fno-zero-initialized-in-bss -flto
+CFLAGS := -std=c99 -Wall -Werror -O2 -nostdlib -nostartfiles -ffreestanding -fno-zero-initialized-in-bss -Iinclude/
 
-OBJECTS = vectors.o pimon.o uart.o gpio.o timer.o string.o printf.o
+all: $(TARGET).bin
 
-all : pimon.bin
+CFILES := $(shell find $(DIRS) -type f -name "*.c")
+ASMFILES := $(shell find $(DIRS) -type f -name "*.s")
+OBJFILES := $(patsubst %.s,%.o,$(ASMFILES)) $(patsubst %.c,%.o,$(CFILES)) 
+DEPFILES := $(patsubst %.c,%.d,$(CFILES))
 
-clean :
-	rm -f *.o
-	rm -f *.bin
-	rm -f *.hex
-	rm -f *.elf
-	rm -f *.list
-	rm -f *.img
-	rm -f *.bc
+-include $(DEPFILES)
 
-vectors.o : vectors.s
-	$(ARMGNU)-as vectors.s -o vectors.o
+%.o: %.s Makefile
+	@echo "   AS   $<"
+	@$(AS) $< -o $@
 
-%.o : %.c
-	$(ARMGNU)-gcc $(COPS) -c $< -o $@
+%.o: %.c Makefile
+	@echo "   CC   $<"
+	@$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
-pimon.elf : memmap $(OBJECTS)
-	$(ARMGNU)-gcc $(OBJECTS) -T memmap -o pimon.elf $(COPS) -lgcc
-	$(ARMGNU)-objdump -D pimon.elf > pimon.list
+$(TARGET).elf: $(OBJFILES) memmap
+	@echo "   LD   $@"
+	@$(CC) $(CFLAGS) $(OBJFILES) -T memmap -o $@ -lgcc
 
-pimon.bin : pimon.elf
-	$(ARMGNU)-objcopy pimon.elf -O binary pimon.bin
-
-pimon.hex : pimon.elf
-	$(ARMGNU)-objcopy pimon.elf -O ihex pimon.hex
-
+$(TARGET).bin: $(TARGET).elf
+	@echo "OBJCOPY $@"
+	@$(OBJCOPY) $(TARGET).elf -O binary $@
+	
+clean:
+	@echo Cleaning up
+	@rm -f $(OBJFILES) $(DEPFILES) $(TARGET).elf $(TARGET).bin
