@@ -14,3 +14,4 @@ void puthex(unsigned int x);
 
 // get a single charater
 char getc();
+int getc_timeout(int ms, unsigned char *c);

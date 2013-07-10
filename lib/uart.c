@@ -59,3 +59,11 @@ char getc() {
 	return *AUX_MU_IO_REG;
 }
 
+// returns 1 if a timeout occurs
+int getc_timeout(int ms, unsigned char *c) {
+	int timeout = *ARM_TIMER_CNT + ms * 1000;
+	while ((*AUX_MU_LSR_REG & 0x1) == 0) 
+		if(*ARM_TIMER_CNT > timeout) return 1;
+	*c = *AUX_MU_IO_REG;
+	return 0;
+}
