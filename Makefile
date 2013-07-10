@@ -25,9 +25,9 @@ DEPFILES := $(patsubst %.c,%.d,$(CFILES))
 	@echo "   CC   $<"
 	@$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
-$(TARGET).elf: $(OBJFILES) memmap
+$(TARGET).elf: $(OBJFILES) rpi.lds
 	@echo "   LD   $@"
-	@$(CC) $(CFLAGS) $(OBJFILES) -T memmap -o $@ -lgcc
+	@$(CC) $(CFLAGS) $(OBJFILES) -T rpi.lds -o $@ -lgcc
 
 $(TARGET).bin: $(TARGET).elf
 	@echo "OBJCOPY $@"
