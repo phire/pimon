@@ -3,15 +3,15 @@
 #include "timer.h"
 
 // MiniUART
-unsigned char volatile * const AUX_ENABLES     = (unsigned char *) 0x20215004;
-unsigned char volatile * const AUX_MU_IO_REG   = (unsigned char *) 0x20215040;
-unsigned char volatile * const AUX_MU_IER_REG  = (unsigned char *) 0x20215044;
-unsigned char volatile * const AUX_MU_IIR_REG  = (unsigned char *) 0x20215048;
-unsigned char volatile * const AUX_MU_LCR_REG  = (unsigned char *) 0x2021504c;
-unsigned char volatile * const AUX_MU_MCR_REG  = (unsigned char *) 0x20215050;
-unsigned char volatile * const AUX_MU_LSR_REG  = (unsigned char *) 0x20215054;
-unsigned char volatile * const AUX_MU_CNTL_REG = (unsigned char *) 0x20215060;
-unsigned short volatile * const AUX_MU_BAUD_REG = (unsigned short *) 0x20215068;
+unsigned int volatile * const AUX_ENABLES     = (unsigned int *) 0x20215004;
+unsigned int volatile * const AUX_MU_IO_REG   = (unsigned int *) 0x20215040;
+unsigned int volatile * const AUX_MU_IER_REG  = (unsigned int *) 0x20215044;
+unsigned int volatile * const AUX_MU_IIR_REG  = (unsigned int *) 0x20215048;
+unsigned int volatile * const AUX_MU_LCR_REG  = (unsigned int *) 0x2021504c;
+unsigned int volatile * const AUX_MU_MCR_REG  = (unsigned int *) 0x20215050;
+unsigned int volatile * const AUX_MU_LSR_REG  = (unsigned int *) 0x20215054;
+unsigned int volatile * const AUX_MU_CNTL_REG = (unsigned int *) 0x20215060;
+unsigned int volatile * const AUX_MU_BAUD_REG = (unsigned int *) 0x20215068;
 
 void initUART() {
 	*AUX_ENABLES = 1;       // enable Mini UART
